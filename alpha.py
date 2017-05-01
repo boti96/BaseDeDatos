@@ -42,7 +42,7 @@ NRC = []
 
 for x in items:
     if(x.text != "01"):
-        if (x.text not in nombre_profesor):
+        #if (x.text not in nombre_profesor):
             nombre_profesor.append(x.text)
 
             n = x.text
@@ -85,30 +85,30 @@ for x in items:
                   "p_selMonto": "0", \
                   "p_selQui": "1"}
 
-           url2 = "http://148.202.105.181/transd/ptqnomi_responsive.PTQNOMI_D"
-           page2 = requests.post(url2, params=p2)
-           soup2 = BeautifulSoup(page2.content)
-           print(page2.url)
+            url2 = "http://148.202.105.181/transd/ptqnomi_responsive.PTQNOMI_D"
+            page2 = requests.post(url2, params=p2)
+            soup2 = BeautifulSoup(page2.content)
+            print(page2.url)
 
-           if (soup2.text.count("$") <= 14):
-               items2 = soup2.find_all("td", class_="td_beige")
-               s1_temp = items2[8].text
-               s1_temp = s1_temp.replace("$", "")
-               s1_temp = s1_temp.replace(" ", "")
-               s1_temp = s1_temp.replace(",", "")
-               s2_temp = "$0.00"
-               c1_temp = float(s1_temp)
-               s1_temp = "$" + s1_temp + ", "
-               s3_temp = c1_temp
+            if (soup2.text.count("$") <= 14):
+                items2 = soup2.find_all("td", class_="td_beige")
+                s1_temp = items2[8].text
+                s1_temp = s1_temp.replace("$", "")
+                s1_temp = s1_temp.replace(" ", "")
+                s1_temp = s1_temp.replace(",", "")
+                s2_temp = "$0.00"
+                c1_temp = float(s1_temp)
+                s1_temp = "$" + s1_temp + ", "
+                s3_temp = c1_temp
 
-               try:
-                   sueldo_concatenate.append(s1_temp + s2_temp)
-                   sueldo_total.append(s3_temp)
-                   puesto.append(items2[2].text)
-               except:
-                   sueldo_concatenate.append(" ")
-                   sueldo_total.append(" ")
-                   puesto.append(" ")
+                try:
+                    sueldo_concatenate.append(s1_temp + s2_temp)
+                    sueldo_total.append(s3_temp)
+                    puesto.append(items2[2].text)
+                except:
+                    sueldo_concatenate.append(" ")
+                    sueldo_total.append(" ")
+                    puesto.append(" ")
 
             elif (soup2.text.count("$") > 14):
                 items2 = soup2.find_all("td", class_="td_beige")
@@ -165,11 +165,11 @@ for x in items:
                         sueldo_total.append(" ")
                         puesto.apend(" ")
 
-for y in items2:
-    try:
-        materia.append(y.text)
-    except:
-        materia.append(" ")
+#for y in items2:
+    #try:
+    #    materia.append(" ")
+    #except:
+    #    materia.append(" ")
 
 for z in items3:
     sec = z.text
@@ -189,7 +189,7 @@ for item_cont in items4:
 
 
 df = pandas.DataFrame(nombre_profesor, columns=['Nombre Profesor'])
-df['Materia'] = materia
+#df['Materia'] = materia
 df['Seccion'] = seccion
 df['Sueldos'] = sueldo_concatenate
 df['Total Sueldo'] = sueldo_total
