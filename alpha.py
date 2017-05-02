@@ -27,9 +27,9 @@ url = "http://consulta.siiau.udg.mx/wco/sspseca.consulta_oferta"
 page = requests.post(url, params=p)
 soup = BeautifulSoup(page.content)
 items = soup.find_all("td", class_="tdprofesor") #nombre de Profesor
-items2 = soup.find_all("a", href = True) #Nombre de la materiap
-items3 = soup.find_all("td", class_="tddatos") #Sección
-items4 = soup.find_all("td", class_="tddatos") #NRC
+items_materia = soup.find_all("a", href = True) #Nombre de la materiap
+items_secc = soup.find_all("td", class_="tddatos") #Sección
+items_nrc = soup.find_all("td", class_="tddatos") #NRC
 nombre_profesor = []
 materia = []
 ape1 = []
@@ -42,7 +42,7 @@ NRC = []
 
 for x in items:
     if(x.text != "01"):
-        #if (x.text not in nombre_profesor):
+        if (x.text not in nombre_profesor):
             nombre_profesor.append(x.text)
 
             n = x.text
@@ -89,6 +89,7 @@ for x in items:
             page2 = requests.post(url2, params=p2)
             soup2 = BeautifulSoup(page2.content)
             print(page2.url)
+            #print("Nombre_chido: ", nombre_chido, " ", ape2, " ", ape1)
 
             if (soup2.text.count("$") <= 14):
                 items2 = soup2.find_all("td", class_="td_beige")
@@ -102,6 +103,11 @@ for x in items:
                 s3_temp = c1_temp
 
                 try:
+                    '''
+                    cont_sueldo_test = cont_sueldo_test + 1
+                    print("cont_sueldo_test: ", cont_sueldo_test)
+                    print("Sueldo: ", s1_temp + s2_temp)
+                    '''
                     sueldo_concatenate.append(s1_temp + s2_temp)
                     sueldo_total.append(s3_temp)
                     puesto.append(items2[2].text)
@@ -139,10 +145,10 @@ for x in items:
                         sueldo_total.append(s3_temp)
                         puesto.append(items2[2].text + ", " + items3[2].text)
                     except:
-                        sueldo_concatenate
+                        sueldo_concatenate.append(" ")
                         sueldo_total.append(" ")
                         puesto.apend(" ")
-            else:
+                else:
                     s1_temp = items2[8].text
                     s1_temp = s1_temp.replace("$", "")
                     s1_temp = s1_temp.replace(" ", "")
@@ -161,27 +167,40 @@ for x in items:
                         sueldo_total.append(s3_temp)
                         puesto.append(items2[2].text + ", " + items3[2].text)
                     except:
+                        input("Error3")
                         sueldo_concatenate.append(" ")
                         sueldo_total.append(" ")
                         puesto.apend(" ")
 
-#for y in items2:
-    #try:
-    #    materia.append(" ")
-    #except:
-    #    materia.append(" ")
 
-for z in items3:
-    sec = z.text
-    if(sec[1:1] == "D"):
+for y in items_materia:
+    mater = y.text
+    if (mater[1:2] != "1" and mater[1:2] != "2" and mater[1:2] != "3" and \
+        mater[1:2] != "4" and mater[1:2] != "5" and mater[1:2] != "6" and \
+        mater[1:2] != "7" and mater[1:2] != "8" and mater[1:2] != "9" and \
+        mater[1:2] != "0"):
+        print("Materia:", mater)
         try:
+            materia.append(mater)
+        except:
+            materia.append(" ")
+
+for z in items_secc:
+    sec = z.text
+    print ("Seccion chafa: ", sec)
+    if(sec[0:1] == "D"):
+        try:
+            print ("Seccion: ", sec)
             seccion.append(sec)
         except:
             seccion.append(" ")
 
-for item_cont in items4:
+for item_cont in items_nrc:
     nrc__ = item_cont.text
-    if(nrc__[1:1] != "I" and len(nrc__) == 5):
+    if(nrc__[0:1] != "I" and len(nrc__) >= 5 and (nrc__[0:1] == "1" or \
+       nrc__[0:1] == "2" or nrc__[0:1] == "3" or nrc__[0:1] == "4" or \
+       nrc__[0:1] == "5" or nrc__[0:1] == "6" or nrc__[0:1] == "7" or \
+       nrc__[0:1] == "8" or nrc__[0:1] == "9" or nrc__[0:1] == "0")):
         try:
             NRC.append(nrc__)
         except:
@@ -190,7 +209,7 @@ for item_cont in items4:
 
 df = pandas.DataFrame(nombre_profesor, columns=['Nombre Profesor'])
 #df['Materia'] = materia
-df['Seccion'] = seccion
+#df['Seccion'] = seccion
 df['Sueldos'] = sueldo_concatenate
 df['Total Sueldo'] = sueldo_total
 
